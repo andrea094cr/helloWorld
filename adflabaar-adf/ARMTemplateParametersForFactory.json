@@ -1,0 +1,51 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "adflabaar-adf"
+		},
+		"integrationRuntime_ADFLab-SSIS": {
+			"value": "ADFLab-SSIS"
+		},
+		"AzureBlobStorage1_connectionString": {
+			"value": ""
+		},
+		"HDI_ADFLab_clusterPassword": {
+			"value": ""
+		},
+		"HDI_ADFLab_clusterSshPassword": {
+			"value": ""
+		},
+		"HDI_ADFLab_servicePrincipalKey": {
+			"value": ""
+		},
+		"SSISDBAzureEndpoint_connectionString": {
+			"value": ""
+		},
+		"HDI_ADFLab_properties_typeProperties_hostSubscriptionId": {
+			"value": "d7681168-b656-44de-b9ad-0d7d977454ba"
+		},
+		"HDI_ADFLab_properties_typeProperties_clusterResourceGroup": {
+			"value": "adflab-rg"
+		},
+		"HDI_ADFLab_properties_typeProperties_servicePrincipalId": {
+			"value": "f7cd511c-70af-4df8-8c3a-0b7407d06226"
+		},
+		"HDI_ADFLab_properties_typeProperties_tenant": {
+			"value": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+		},
+		"HDI_ADFLab_properties_typeProperties_clusterUserName": {
+			"value": "labadmin"
+		},
+		"ADFLab-SSIS_properties_typeProperties_ssisProperties_catalogInfo_catalogServerEndpoint": {
+			"value": "adflabsqlk3wsi.database.windows.net"
+		},
+		"ADFLab-SSIS_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminUserName": {
+			"value": "labadmin"
+		},
+		"ADFLab-SSIS_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminPassword": {
+			"value": ""
+		}
+	}
+}
