@@ -6,161 +6,12 @@
 			"type": "string",
 			"metadata": "Data Factory Name",
 			"defaultValue": "adflabaar-adf"
-		},
-		"integrationRuntime_ADFLab-SSIS": {
-			"type": "string",
-			"metadata": "Integration Runtime Name",
-			"defaultValue": "ADFLab-SSIS"
-		},
-		"AmazonS31_secretAccessKey": {
-			"type": "secureString",
-			"metadata": "Secure string for 'secretAccessKey' of 'AmazonS31'"
-		},
-		"AzureBlobStorage1_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage1'"
-		},
-		"HDI_ADFLab_clusterPassword": {
-			"type": "secureString",
-			"metadata": "Secure string for 'clusterPassword' of 'HDI_ADFLab'"
-		},
-		"HDI_ADFLab_clusterSshPassword": {
-			"type": "secureString",
-			"metadata": "Secure string for 'clusterSshPassword' of 'HDI_ADFLab'"
-		},
-		"HDI_ADFLab_servicePrincipalKey": {
-			"type": "secureString",
-			"metadata": "Secure string for 'servicePrincipalKey' of 'HDI_ADFLab'"
-		},
-		"SSISDBAzureEndpoint_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'SSISDBAzureEndpoint'"
-		},
-		"MasterFAAFile_properties_typeProperties_fileName": {
-			"type": "string",
-			"defaultValue": "FAAmaster.txt"
-		},
-		"MasterFAAFile_properties_typeProperties_folderPath": {
-			"type": "string",
-			"defaultValue": "input/FAAmaster"
-		},
-		"AmazonS31_properties_typeProperties_accessKeyId": {
-			"type": "string",
-			"defaultValue": "AKIAJRVEJOJE5SLRECDA"
-		},
-		"HDI_ADFLab_properties_typeProperties_hostSubscriptionId": {
-			"type": "string",
-			"defaultValue": "d7681168-b656-44de-b9ad-0d7d977454ba"
-		},
-		"HDI_ADFLab_properties_typeProperties_clusterResourceGroup": {
-			"type": "string",
-			"defaultValue": "adflab-rg"
-		},
-		"HDI_ADFLab_properties_typeProperties_servicePrincipalId": {
-			"type": "string",
-			"defaultValue": "f7cd511c-70af-4df8-8c3a-0b7407d06226"
-		},
-		"HDI_ADFLab_properties_typeProperties_tenant": {
-			"type": "string",
-			"defaultValue": "72f988bf-86f1-41af-91ab-2d7cd011db47"
-		},
-		"HDI_ADFLab_properties_typeProperties_clusterUserName": {
-			"type": "string",
-			"defaultValue": "labadmin"
-		},
-		"ADFLab-SSIS_properties_typeProperties_ssisProperties_catalogInfo_catalogServerEndpoint": {
-			"type": "string",
-			"defaultValue": "adflabsqlk3wsi.database.windows.net"
-		},
-		"ADFLab-SSIS_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminUserName": {
-			"type": "string",
-			"defaultValue": "labadmin"
-		},
-		"ADFLab-SSIS_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminPassword": {
-			"type": "secureString"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
-		{
-			"name": "[concat(parameters('factoryName'), '/Merge FAA Files')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Run FAA Hive Merge",
-						"type": "HDInsightHive",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"scriptPath": "input/FAAMerge.hql",
-							"scriptLinkedService": {
-								"referenceName": "AzureBlobStorage1",
-								"type": "LinkedServiceReference"
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "HDI_ADFLab",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]",
-				"[concat(variables('factoryId'), '/linkedServices/HDI_ADFLab')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Module2')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Execute SQL",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "sp_executesql",
-							"storedProcedureParameters": {
-								"stmt": {
-									"value": "DECLARE @return_value INT, @exe_id BIGINT, @err_msg NVARCHAR(150)    EXEC @return_value=[SSISDB].[catalog].[create_execution] @folder_name=N'ADFLab', @project_name=N'ADFLab', @package_name=N'Module2.dtsx', @use32bitruntime=0, @runinscaleout=1, @useanyworker=1, @execution_id=@exe_id OUTPUT    EXEC [SSISDB].[catalog].[set_execution_parameter_value] @exe_id, @object_type=50, @parameter_name=N'SYNCHRONIZED', @parameter_value=1    EXEC [SSISDB].[catalog].[start_execution] @execution_id=@exe_id, @retry_count=0    IF(SELECT [status] FROM [SSISDB].[catalog].[executions] WHERE execution_id=@exe_id)<>7 BEGIN SET @err_msg=N'Your package execution did not succeed for execution ID: ' + CAST(@exe_id AS NVARCHAR(20)) RAISERROR(@err_msg,15,1) END",
-									"type": "String"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "SSISDBAzureEndpoint",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SSISDBAzureEndpoint')]"
-			]
-		},
 		{
 			"name": "[concat(parameters('factoryName'), '/S3 to Blob Copy')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
@@ -170,7 +21,6 @@
 					{
 						"name": "S3 to Azure Blob",
 						"type": "Copy",
-						"dependsOn": [],
 						"policy": {
 							"timeout": "7.00:00:00",
 							"retry": 0,
@@ -178,7 +28,6 @@
 							"secureOutput": false,
 							"secureInput": false
 						},
-						"userProperties": [],
 						"typeProperties": {
 							"source": {
 								"type": "FileSystemSource",
@@ -232,15 +81,13 @@
 						"inputs": [
 							{
 								"referenceName": "S3MasterFAAFile",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						],
 						"outputs": [
 							{
 								"referenceName": "MasterFAAFile",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						]
 					},
@@ -262,7 +109,6 @@
 							"secureOutput": false,
 							"secureInput": false
 						},
-						"userProperties": [],
 						"typeProperties": {
 							"url": "https://prod-06.eastus.logic.azure.com:443/workflows/8fa55e7e4c58474da6d7a8743cd0b46e/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=UzV0NsjQG1ngh88MmRSlBUFH72lADFRjV6Vo9wxdIOM",
 							"method": "POST",
@@ -296,7 +142,6 @@
 							"secureOutput": false,
 							"secureInput": false
 						},
-						"userProperties": [],
 						"typeProperties": {
 							"url": "https://prod-06.eastus.logic.azure.com:443/workflows/8fa55e7e4c58474da6d7a8743cd0b46e/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=UzV0NsjQG1ngh88MmRSlBUFH72lADFRjV6Vo9wxdIOM",
 							"method": "POST",
@@ -315,8 +160,7 @@
 						"type": "String",
 						"defaultValue": "analvar@microsoft.com"
 					}
-				},
-				"annotations": []
+				}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/S3MasterFAAFile')]",
@@ -332,7 +176,6 @@
 					"referenceName": "AzureBlobStorage1",
 					"type": "LinkedServiceReference"
 				},
-				"annotations": [],
 				"type": "AzureBlob",
 				"structure": [
 					{
@@ -482,13 +325,10 @@
 						"skipLineCount": 0,
 						"firstRowAsHeader": true
 					},
-					"fileName": "[parameters('MasterFAAFile_properties_typeProperties_fileName')]",
-					"folderPath": "[parameters('MasterFAAFile_properties_typeProperties_folderPath')]"
+					"fileName": "FAAmaster.txt",
+					"folderPath": "input/FAAmaster"
 				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
-			]
+			}
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/S3MasterFAAFile')]",
@@ -499,7 +339,6 @@
 					"referenceName": "AmazonS31",
 					"type": "LinkedServiceReference"
 				},
-				"annotations": [],
 				"type": "AmazonS3Object",
 				"structure": [
 					{
@@ -653,162 +492,7 @@
 					"key": "MASTER.txt",
 					"bucketName": "adflab-s3"
 				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AmazonS31')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AmazonS31')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AmazonS3",
-				"typeProperties": {
-					"accessKeyId": "[parameters('AmazonS31_properties_typeProperties_accessKeyId')]",
-					"secretAccessKey": {
-						"type": "SecureString",
-						"value": "[parameters('AmazonS31_secretAccessKey')]"
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AzureBlobStorage1')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureBlobStorage",
-				"typeProperties": {
-					"connectionString": "[parameters('AzureBlobStorage1_connectionString')]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/HDI_ADFLab')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "HDInsightOnDemand",
-				"typeProperties": {
-					"clusterType": "hadoop",
-					"clusterSize": 4,
-					"timeToLive": "00:05:00",
-					"version": "3.6",
-					"hostSubscriptionId": "[parameters('HDI_ADFLab_properties_typeProperties_hostSubscriptionId')]",
-					"clusterResourceGroup": "[parameters('HDI_ADFLab_properties_typeProperties_clusterResourceGroup')]",
-					"servicePrincipalId": "[parameters('HDI_ADFLab_properties_typeProperties_servicePrincipalId')]",
-					"tenant": "[parameters('HDI_ADFLab_properties_typeProperties_tenant')]",
-					"clusterNamePrefix": "",
-					"clusterUserName": "[parameters('HDI_ADFLab_properties_typeProperties_clusterUserName')]",
-					"clusterPassword": {
-						"type": "SecureString",
-						"value": "[parameters('HDI_ADFLab_clusterPassword')]"
-					},
-					"clusterSshPassword": {
-						"type": "SecureString",
-						"value": "[parameters('HDI_ADFLab_clusterSshPassword')]"
-					},
-					"servicePrincipalKey": {
-						"type": "SecureString",
-						"value": "[parameters('HDI_ADFLab_servicePrincipalKey')]"
-					},
-					"additionalLinkedServiceNames": [
-						{
-							"referenceName": "AzureBlobStorage1",
-							"type": "LinkedServiceReference"
-						}
-					],
-					"linkedServiceName": {
-						"referenceName": "AzureBlobStorage1",
-						"type": "LinkedServiceReference"
-					},
-					"headNodeSize": "",
-					"dataNodeSize": "",
-					"zookeeperNodeSize": ""
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SSISDBAzureEndpoint')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureSqlDatabase",
-				"typeProperties": {
-					"connectionString": "[parameters('SSISDBAzureEndpoint_connectionString')]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Module2 Trigger')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"runtimeState": "Stopped",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "Module2",
-							"type": "PipelineReference"
-						},
-						"parameters": {}
-					}
-				],
-				"type": "ScheduleTrigger",
-				"typeProperties": {
-					"recurrence": {
-						"frequency": "Day",
-						"interval": 1,
-						"startTime": "2018-11-21T13:56:00Z",
-						"timeZone": "UTC"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/Module2')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/', parameters('integrationRuntime_ADFLab-SSIS'))]",
-			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "Managed",
-				"typeProperties": {
-					"computeProperties": {
-						"location": "East US",
-						"nodeSize": "Standard_D4_v2",
-						"numberOfNodes": 2,
-						"maxParallelExecutionsPerNode": 1
-					},
-					"ssisProperties": {
-						"catalogInfo": {
-							"catalogServerEndpoint": "[parameters('ADFLab-SSIS_properties_typeProperties_ssisProperties_catalogInfo_catalogServerEndpoint')]",
-							"catalogAdminUserName": "[parameters('ADFLab-SSIS_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminUserName')]",
-							"catalogAdminPassword": {
-								"type": "SecureString",
-								"value": "[parameters('ADFLab-SSIS_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminPassword')]"
-							},
-							"catalogPricingTier": "Basic"
-						},
-						"edition": "Standard",
-						"licenseType": "BasePrice"
-					}
-				}
-			},
-			"dependsOn": []
+			}
 		}
 	]
 }

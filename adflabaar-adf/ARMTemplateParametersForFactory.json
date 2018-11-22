@@ -8,6 +8,9 @@
 		"integrationRuntime_ADFLab-SSIS": {
 			"value": "ADFLab-SSIS"
 		},
+		"AmazonS31_secretAccessKey": {
+			"value": ""
+		},
 		"AzureBlobStorage1_connectionString": {
 			"value": ""
 		},
@@ -22,6 +25,15 @@
 		},
 		"SSISDBAzureEndpoint_connectionString": {
 			"value": ""
+		},
+		"MasterFAAFile_properties_typeProperties_fileName": {
+			"value": "FAAmaster.txt"
+		},
+		"MasterFAAFile_properties_typeProperties_folderPath": {
+			"value": "input/FAAmaster"
+		},
+		"AmazonS31_properties_typeProperties_accessKeyId": {
+			"value": "AKIAJRVEJOJE5SLRECDA"
 		},
 		"HDI_ADFLab_properties_typeProperties_hostSubscriptionId": {
 			"value": "d7681168-b656-44de-b9ad-0d7d977454ba"
