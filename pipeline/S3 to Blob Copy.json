@@ -64,7 +64,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "AmazonS3Object1",
+						"referenceName": "S3MasterFAAFile",
 						"type": "DatasetReference"
 					}
 				],
@@ -74,6 +74,17 @@
 						"type": "DatasetReference"
 					}
 				]
+			},
+			{
+				"name": "Web1",
+				"type": "WebActivity",
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				}
 			}
 		]
 	}
