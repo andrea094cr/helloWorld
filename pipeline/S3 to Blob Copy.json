@@ -107,6 +107,22 @@
 						"recipient": "@{pipeline().parameters.recipient}"
 					}
 				}
+			},
+			{
+				"name": "SendFailureEmail",
+				"type": "WebActivity",
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"typeProperties": {
+					"url": "https://prod-06.eastus.logic.azure.com:443/workflows/8fa55e7e4c58474da6d7a8743cd0b46e/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=UzV0NsjQG1ngh88MmRSlBUFH72lADFRjV6Vo9wxdIOM",
+					"method": "POST",
+					"body": "Body{\"dataFactoryName\":\"@{pipeline().DataFactory}\",\"successtype\":\"Failed\",\"message\":\"@{activity('S3 to Azure Blob').error.message}\",\"pipelineName\":\"@{pipeline().Pipeline}\",\"recipient\":\"@{pipeline().parameters.recipient}\"}"
+				}
 			}
 		],
 		"parameters": {
