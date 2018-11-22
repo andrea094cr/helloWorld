@@ -17,12 +17,60 @@
 						"type": "FileSystemSource",
 						"recursive": true
 					},
+					"sink": {
+						"type": "BlobSink"
+					},
 					"enableStaging": false,
-					"dataIntegrationUnits": 0
+					"dataIntegrationUnits": 0,
+					"translator": {
+						"type": "TabularTranslator",
+						"columnMappings": {
+							"N-Number": "N-Number",
+							"Serial Number": "Serial Number",
+							"MFR MDL Code": "MFR MDL Code",
+							"Eng MFR Code": "Eng MFR Code",
+							"Year MFR": "Year MFR",
+							"Type Registrant": "Type Registrant",
+							"Name": "Name",
+							"Street 1": "Street 1",
+							"Street2": "Street2",
+							"City": "City",
+							"State": "State",
+							"ZIP": "ZIP",
+							"Region": "Region",
+							"County ": "County ",
+							"Country": "Country",
+							"Last Activity Date": "Last Activity Date",
+							"Cert Issue Date": "Cert Issue Date",
+							"Certification Requested ": "Certification Requested ",
+							"Type Aircraft": "Type Aircraft",
+							"Type Engine": "Type Engine",
+							"Status Code": "Status Code",
+							"Mode S Code": "Mode S Code",
+							"Fractional  Ownership": "Fractional  Ownership",
+							"Airworthiness Date": "Airworthiness Date",
+							"Other Name 1": "Other Name 1",
+							"Other Name 2": "Other Name 2",
+							"Other Name 3": "Other Name 3",
+							"Other Name 4": "Other Name 4",
+							"Other Name 5": "Other Name 5",
+							"Expiration Date": "Expiration Date",
+							"Unique ID": "Unique ID",
+							"Kit MFR Code": "Kit MFR Code",
+							"Kit Model": "Kit Model",
+							"Mose S Code Hex": "Mose S Code Hex"
+						}
+					}
 				},
 				"inputs": [
 					{
 						"referenceName": "AmazonS3Object1",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "MasterFAAFile",
 						"type": "DatasetReference"
 					}
 				]
