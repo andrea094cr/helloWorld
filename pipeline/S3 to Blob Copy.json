@@ -133,7 +133,7 @@
 						"Content-Type": "Application/json"
 					},
 					"body": {
-						"value": "Body{\"dataFactoryName\":\"@{pipeline().DataFactory}\",\"successtype\":\"Failed\",\"message\":\"@{activity('S3 to Azure Blob').error.message}\",\"pipelineName\":\"@{pipeline().Pipeline}\",\"recipient\":\"@{pipeline().parameters.recipient}\"}",
+						"value": "{\"dataFactoryName\":\"@{pipeline().DataFactory}\",\"successtype\":\"Failed\",\"message\":\"@{activity('S3 to Azure Blob').error.message}\",\"pipelineName\":\"@{pipeline().Pipeline}\",\"recipient\":\"@{pipeline().parameters.recipient}\"}",
 						"type": "Expression"
 					}
 				}
