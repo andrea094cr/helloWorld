@@ -1,5 +1,5 @@
 {
-	"name": "AmazonS3Source",
+	"name": "S3MasterFAAFile",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AmazonS31",
